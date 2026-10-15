@@ -30,6 +30,14 @@ const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // instrument 1
 const synthAM = new Tone.PolySynth(Tone.AMSynth).toDestination(); // instrument 2
 const synthMONO = new Tone.PolySynth(Tone.MonoSynth).toDestination(); // instrument 3
 const synthFM = new Tone.PolySynth(Tone.FMSynth).toDestination(); // instrument 4
+
+let keyboard = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k'];
+let notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
+let keyboardToNotes = new Map();
+for (let index = 0; index < notes.length; index++) {
+  keyboardToNotes.set(keyboard[index], notes[index]);
+}
+
 //Setting the defualt to the notes of Mode1
 let Mode1 = false;
 let Mode2 = false;
@@ -43,7 +51,9 @@ function keyDown(event) {
 
   // Holding a key down sends keydown again and again. Only react to the first one.
   if (event.repeat === false) {
+    let currentNote = keyboardToNotes.get(event.key);
     console.log("Key down:", event.key);
+    console.log("Current Note:", currentNote);
 
     //Checking for the mode buttons thus enabling an instrument
     if (event.key === "1") {
@@ -67,82 +77,24 @@ function keyDown(event) {
       Mode3 = false;
       Mode4 = true;
     }
+
+    console.log(Mode1, Mode2, Mode3, Mode4);
     //Notes for instrument 1
     if (Mode1 === true) {
-      if (event.key === "a") {
-        synth.triggerAttack("C4", Tone.now()); // keeps sounding until triggerRelease
-      } else if (event.key === "s") {
-        synth.triggerAttack("D4", Tone.now());
-      } else if (event.key === "d") {
-        synth.triggerAttack("E4", Tone.now());
-      } else if (event.key === "f") {
-        synth.triggerAttack("F4", Tone.now());
-      } else if (event.key === "g") {
-        synth.triggerAttack("G4", Tone.now());
-      } else if (event.key === "h") {
-        synth.triggerAttack("A4", Tone.now());
-      } else if (event.key === "j") {
-        synth.triggerAttack("B4", Tone.now());
-      } else if (event.key === "k") {
-        synth.triggerAttack("C5", Tone.now());
-      }
+      synth.triggerAttack(currentNote, Tone.now());
       //Notes for instrument 2
-    } else if (Mode2 === true) {
-      if (event.key === "a") {
-        synthAM.triggerAttack("C4", Tone.now()); // keeps sounding until triggerRelease
-      } else if (event.key === "s") {
-        synthAM.triggerAttack("D4", Tone.now());
-      } else if (event.key === "d") {
-        synthAM.triggerAttack("E4", Tone.now());
-      } else if (event.key === "f") {
-        synthAM.triggerAttack("F4", Tone.now());
-      } else if (event.key === "g") {
-        synthAM.triggerAttack("G4", Tone.now());
-      } else if (event.key === "h") {
-        synthAM.triggerAttack("A4", Tone.now());
-      } else if (event.key === "j") {
-        synthAM.triggerAttack("B4", Tone.now());
-      } else if (event.key === "k") {
-        synthAM.triggerAttack("C5", Tone.now());
-      }
+    }
+    else if (Mode2 === true) {
+      synthAM.triggerAttack(currentNote, Tone.now());
       //Notes for instrument 3
-    } else if (Mode3 === true) {
-      if (event.key === "a") {
-        synthMONO.triggerAttack("C4", Tone.now()); // keeps sounding until triggerRelease
-      } else if (event.key === "s") {
-        synthMONO.triggerAttack("D4", Tone.now());
-      } else if (event.key === "d") {
-        synthMONO.triggerAttack("E4", Tone.now());
-      } else if (event.key === "f") {
-        synthMONO.triggerAttack("F4", Tone.now());
-      } else if (event.key === "g") {
-        synthMONO.triggerAttack("G4", Tone.now());
-      } else if (event.key === "h") {
-        synthMONO.triggerAttack("A4", Tone.now());
-      } else if (event.key === "j") {
-        synthMONO.triggerAttack("B4", Tone.now());
-      } else if (event.key === "k") {
-        synthMONO.triggerAttack("C5", Tone.now());
-      }
+    }
+    else if (Mode3 === true) {
+      synthMONO.triggerAttack(currentNote, Tone.now());
+
       //Notes for instrument 4
-    } else if (Mode4 === true) {
-      if (event.key === "a") {
-        synthFM.triggerAttack("C4", Tone.now()); // keeps sounding until triggerRelease
-      } else if (event.key === "s") {
-        synthFM.triggerAttack("D4", Tone.now());
-      } else if (event.key === "d") {
-        synthFM.triggerAttack("E4", Tone.now());
-      } else if (event.key === "f") {
-        synthFM.triggerAttack("F4", Tone.now());
-      } else if (event.key === "g") {
-        synthFM.triggerAttack("G4", Tone.now());
-      } else if (event.key === "h") {
-        synthFM.triggerAttack("A4", Tone.now());
-      } else if (event.key === "j") {
-        synthFM.triggerAttack("B4", Tone.now());
-      } else if (event.key === "k") {
-        synthFM.triggerAttack("C5", Tone.now());
-      }
+    }
+    else if (Mode4 === true) {
+      synthFM.triggerAttack(currentNote, Tone.now());
     }
   }
 }
