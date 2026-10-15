@@ -63,7 +63,6 @@ function keyDown(event) {
 
 // Runs every time a key comes up.
 function keyUp(event) {
-
     let keyNote = keyboardToNotes.get(event.key);
     console.log("Current Note:", keyNote);
     console.log("Key up:", event.key);
@@ -72,28 +71,9 @@ function keyUp(event) {
   // If each instrument stopped in different ifs like they are initiatedthen swapping instruments could prevent a
   // note from stopping.
 
-  for (instrument of Instruments) {
+  for (const instrument of Instruments) {
      instrument.triggerRelease(keyNote, Tone.now());
     }
-
-  // if (event.key === "a") {
-  //   Instruments[index].triggerRelease(keyNote, Tone.now());
-  // } else if (event.key === "s") {
-  //   Instruments[index].triggerRelease(keyNote, Tone.now());
-  // } else if (event.key === "d") {
-  //   Instruments[index].triggerRelease(keyNote, Tone.now());
-  // } else if (event.key === "f") {
-  //   Instruments[index].triggerRelease(keyNote, Tone.now());
-  // } else if (event.key === "g") {
-  //   Instruments[index].triggerRelease(keyNote, Tone.now());
-  // } else if (event.key === "h") {
-  //   Instruments[index].triggerRelease(keyNote, Tone.now());
-  // } else if (event.key === "j") {
-  //   Instruments[index].triggerRelease(keyNote, Tone.now());
-  // } else if (event.key === "k") {
-  //   Instruments[index].triggerRelease(keyNote, Tone.now());
-  // }
-
 }
 
 // ---------- Setup ----------
