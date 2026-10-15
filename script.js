@@ -84,24 +84,10 @@ function keyDown(event) {
       index = 3;
     }
 
-    console.log(Mode1, Mode2, Mode3, Mode4);
+    //console.log(Mode1, Mode2, Mode3, Mode4);
     //Notes for instrument 1
-    if (Mode1 === true) {
-      synth.triggerAttack(currentNote, Tone.now());
-      //Notes for instrument 2
-    }
-    else if (Mode2 === true) {
-      synthAM.triggerAttack(currentNote, Tone.now());
-      //Notes for instrument 3
-    }
-    else if (Mode3 === true) {
-      synthMONO.triggerAttack(currentNote, Tone.now());
+    Instruments[index].triggerAttack(currentNote, Tone.now());
 
-      //Notes for instrument 4
-    }
-    else if (Mode4 === true) {
-      synthFM.triggerAttack(currentNote, Tone.now());
-    }
   }
 }
 
