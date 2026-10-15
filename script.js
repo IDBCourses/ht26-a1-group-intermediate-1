@@ -93,52 +93,37 @@ function keyDown(event) {
 
 // Runs every time a key comes up.
 function keyUp(event) {
-  console.log("Key up:", event.key);
+
+    let keyNote = keyboardToNotes.get(event.key);
+    console.log("Current Note:", keyNote);
+    console.log("Key up:", event.key);
   //This makes sure that the notes stop playing when lifted, and allows for swapping between instruments fluently
   // and makes sure that when a key is lifted, it will stop playing no matter the instrument it was initiated on.
   // If each instrument stopped in different ifs like they are initiatedthen swapping instruments could prevent a
   // note from stopping.
-  if (event.key === "a") {
-    synth.triggerRelease("C4", Tone.now());
-    synthAM.triggerRelease("C4", Tone.now());
-    synthMONO.triggerRelease("C4", Tone.now());
-    synthFM.triggerRelease("C4", Tone.now());
-  } else if (event.key === "s") {
-    synth.triggerRelease("D4", Tone.now());
-    synthAM.triggerRelease("D4", Tone.now());
-    synthMONO.triggerRelease("D4", Tone.now());
-    synthFM.triggerRelease("D4", Tone.now());
-  } else if (event.key === "d") {
-    synth.triggerRelease("E4", Tone.now());
-    synthAM.triggerRelease("E4", Tone.now());
-    synthMONO.triggerRelease("E4", Tone.now());
-    synthFM.triggerRelease("E4", Tone.now());
-  } else if (event.key === "f") {
-    synth.triggerRelease("F4", Tone.now());
-    synthAM.triggerRelease("F4", Tone.now());
-    synthMONO.triggerRelease("F4", Tone.now());
-    synthFM.triggerRelease("F4", Tone.now());
-  } else if (event.key === "g") {
-    synth.triggerRelease("G4", Tone.now());
-    synthAM.triggerRelease("G4", Tone.now());
-    synthMONO.triggerRelease("G4", Tone.now());
-    synthFM.triggerRelease("G4", Tone.now());
-  } else if (event.key === "h") {
-    synth.triggerRelease("A4", Tone.now());
-    synthAM.triggerRelease("A4", Tone.now());
-    synthMONO.triggerRelease("A4", Tone.now());
-    synthFM.triggerRelease("A4", Tone.now());
-  } else if (event.key === "j") {
-    synth.triggerRelease("B4", Tone.now());
-    synthAM.triggerRelease("B4", Tone.now());
-    synthMONO.triggerRelease("B4", Tone.now());
-    synthFM.triggerRelease("B4", Tone.now());
-  } else if (event.key === "k") {
-    synth.triggerRelease("C5", Tone.now());
-    synthAM.triggerRelease("C5", Tone.now());
-    synthMONO.triggerRelease("C5", Tone.now());
-    synthFM.triggerRelease("C5", Tone.now());
-  }
+
+  for (instrument of Instruments) {
+     instrument.triggerRelease(keyNote, Tone.now());
+    }
+
+  // if (event.key === "a") {
+  //   Instruments[index].triggerRelease(keyNote, Tone.now());
+  // } else if (event.key === "s") {
+  //   Instruments[index].triggerRelease(keyNote, Tone.now());
+  // } else if (event.key === "d") {
+  //   Instruments[index].triggerRelease(keyNote, Tone.now());
+  // } else if (event.key === "f") {
+  //   Instruments[index].triggerRelease(keyNote, Tone.now());
+  // } else if (event.key === "g") {
+  //   Instruments[index].triggerRelease(keyNote, Tone.now());
+  // } else if (event.key === "h") {
+  //   Instruments[index].triggerRelease(keyNote, Tone.now());
+  // } else if (event.key === "j") {
+  //   Instruments[index].triggerRelease(keyNote, Tone.now());
+  // } else if (event.key === "k") {
+  //   Instruments[index].triggerRelease(keyNote, Tone.now());
+  // }
+
 }
 
 // ---------- Setup ----------
