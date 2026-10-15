@@ -39,10 +39,6 @@ for (let index = 0; index < notes.length; index++) {
 }
 
 //Setting the defualt to the notes of Mode1
-//let Mode1 = false;
-//let Mode2 = false;
-//let Mode3 = false;
-//let Mode4 = false;
 let index = 0;
 const Instruments = [synth, synthAM, synthMONO, synthFM];
 
@@ -58,36 +54,10 @@ function keyDown(event) {
     console.log("Current Note:", currentNote);
 
     //Checking for the mode buttons thus enabling an instrument
-    if (event.key === "1") {
-      //Mode1 = true;
-      //Mode2 = false;
-      //Mode3 = false;
-      //Mode4 = false;
-      index = 0;
-    } else if (event.key === "2") {
-      //Mode1 = false;
-      //Mode2 = true;
-      //Mode3 = false;
-      //Mode4 = false;
-      index = 1;
-    } else if (event.key === "3") {
-      //Mode1 = false;
-      //Mode2 = false;
-      //Mode3 = true;
-      //Mode4 = false;
-      index = 2;
-    } else if (event.key === "4") {
-      //Mode1 = false;
-      //Mode2 = false;
-      //Mode3 = false;
-      //Mode4 = true;
-      index = 3;
+    if (parseInt(event.key) >= 1 && parseInt(event.key) <= 4) {
+      index = parseInt(event.key) - 1;
     }
-
-    //console.log(Mode1, Mode2, Mode3, Mode4);
-    //Notes for instrument 1
-    Instruments[index].triggerAttack(currentNote, Tone.now());
-
+    Instruments.at(index).triggerAttack(currentNote, Tone.now());
   }
 }
 
