@@ -5,8 +5,6 @@
  *   settings — the "fixed" parts of your program
  *   state    — the parts of your program that change over time
  *   sound    — the Tone.js instruments and effects
- *   update   — updates the state every 100ms, if necessary
- *   use      — applies the state to make sound every 100ms, if necessary
  *   controls — what happens when a key goes down or comes up
  *   setup    — starts everything
  *
@@ -21,8 +19,6 @@
 // ---------- Settings ----------
 // Settings variables should contain all of the "fixed" parts of your programs
 // For example: which key does what, which notes you can play, the tempo.
-const exampleKey = "a"; // the key that plays the example note
-const exampleNote = "C4"; // the note it plays
 
 // ---------- State ----------
 // State variables are the parts of your program that change over time.
@@ -30,23 +26,17 @@ const exampleNote = "C4"; // the note it plays
 
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
-const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // can play several notes at once
+const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // instrument 1
+const synthAM = new Tone.PolySynth(Tone.AMSynth).toDestination(); // instrument 2
+const synthMONO = new Tone.PolySynth(Tone.MonoSynth).toDestination(); // instrument 3
+const synthFM = new Tone.PolySynth(Tone.FMSynth).toDestination(); // instrument 4
+//Setting the defualt to the notes of Mode1
+let Mode1 = false;
+let Mode2 = false;
+let Mode3 = false;
+let Mode4 = false;
 
-// ---------- Update ----------
-// Update the state. This is called every 100ms.
-function update() {
-  // Example: replace this with your own instrument.
-
-  setTimeout(update, 100); // call update() again in 100 milliseconds
-}
-
-// ---------- Use ----------
-// Use the state to make sound. This is called every 100ms.
-function use() {
-  setTimeout(use, 100); // call use() again in 100 milliseconds
-}
-
-// ---------- Controls (Event Handlers) ----------
+// ---------- Controls ----------
 // Runs every time a key goes down.
 function keyDown(event) {
   Tone.start(); // browsers only allow sound after the player has pressed something
@@ -55,9 +45,104 @@ function keyDown(event) {
   if (event.repeat === false) {
     console.log("Key down:", event.key);
 
-    // Example: replace this with your own instrument.
-    if (event.key === exampleKey) {
-      synth.triggerAttack(exampleNote, Tone.now()); // keeps sounding until triggerRelease
+    //Checking for the mode buttons thus enabling an instrument
+    if (event.key === "1") {
+      Mode1 = true;
+      Mode2 = false;
+      Mode3 = false;
+      Mode4 = false;
+    } else if (event.key === "2") {
+      Mode1 = false;
+      Mode2 = true;
+      Mode3 = false;
+      Mode4 = false;
+    } else if (event.key === "3") {
+      Mode1 = false;
+      Mode2 = false;
+      Mode3 = true;
+      Mode4 = false;
+    } else if (event.key === "4") {
+      Mode1 = false;
+      Mode2 = false;
+      Mode3 = false;
+      Mode4 = true;
+    }
+    //Notes for instrument 1
+    if (Mode1 === true) {
+      if (event.key === "a") {
+        synth.triggerAttack("C4", Tone.now()); // keeps sounding until triggerRelease
+      } else if (event.key === "s") {
+        synth.triggerAttack("D4", Tone.now());
+      } else if (event.key === "d") {
+        synth.triggerAttack("E4", Tone.now());
+      } else if (event.key === "f") {
+        synth.triggerAttack("F4", Tone.now());
+      } else if (event.key === "g") {
+        synth.triggerAttack("G4", Tone.now());
+      } else if (event.key === "h") {
+        synth.triggerAttack("A4", Tone.now());
+      } else if (event.key === "j") {
+        synth.triggerAttack("B4", Tone.now());
+      } else if (event.key === "k") {
+        synth.triggerAttack("C5", Tone.now());
+      }
+      //Notes for instrument 2
+    } else if (Mode2 === true) {
+      if (event.key === "a") {
+        synthAM.triggerAttack("C4", Tone.now()); // keeps sounding until triggerRelease
+      } else if (event.key === "s") {
+        synthAM.triggerAttack("D4", Tone.now());
+      } else if (event.key === "d") {
+        synthAM.triggerAttack("E4", Tone.now());
+      } else if (event.key === "f") {
+        synthAM.triggerAttack("F4", Tone.now());
+      } else if (event.key === "g") {
+        synthAM.triggerAttack("G4", Tone.now());
+      } else if (event.key === "h") {
+        synthAM.triggerAttack("A4", Tone.now());
+      } else if (event.key === "j") {
+        synthAM.triggerAttack("B4", Tone.now());
+      } else if (event.key === "k") {
+        synthAM.triggerAttack("C5", Tone.now());
+      }
+      //Notes for instrument 3
+    } else if (Mode3 === true) {
+      if (event.key === "a") {
+        synthMONO.triggerAttack("C4", Tone.now()); // keeps sounding until triggerRelease
+      } else if (event.key === "s") {
+        synthMONO.triggerAttack("D4", Tone.now());
+      } else if (event.key === "d") {
+        synthMONO.triggerAttack("E4", Tone.now());
+      } else if (event.key === "f") {
+        synthMONO.triggerAttack("F4", Tone.now());
+      } else if (event.key === "g") {
+        synthMONO.triggerAttack("G4", Tone.now());
+      } else if (event.key === "h") {
+        synthMONO.triggerAttack("A4", Tone.now());
+      } else if (event.key === "j") {
+        synthMONO.triggerAttack("B4", Tone.now());
+      } else if (event.key === "k") {
+        synthMONO.triggerAttack("C5", Tone.now());
+      }
+      //Notes for instrument 4
+    } else if (Mode4 === true) {
+      if (event.key === "a") {
+        synthFM.triggerAttack("C4", Tone.now()); // keeps sounding until triggerRelease
+      } else if (event.key === "s") {
+        synthFM.triggerAttack("D4", Tone.now());
+      } else if (event.key === "d") {
+        synthFM.triggerAttack("E4", Tone.now());
+      } else if (event.key === "f") {
+        synthFM.triggerAttack("F4", Tone.now());
+      } else if (event.key === "g") {
+        synthFM.triggerAttack("G4", Tone.now());
+      } else if (event.key === "h") {
+        synthFM.triggerAttack("A4", Tone.now());
+      } else if (event.key === "j") {
+        synthFM.triggerAttack("B4", Tone.now());
+      } else if (event.key === "k") {
+        synthFM.triggerAttack("C5", Tone.now());
+      }
     }
   }
 }
@@ -65,19 +150,56 @@ function keyDown(event) {
 // Runs every time a key comes up.
 function keyUp(event) {
   console.log("Key up:", event.key);
-
-  // Example: replace this with your own instrument.
-  if (event.key === exampleKey) {
-    synth.triggerRelease(exampleNote, Tone.now());
+  //This makes sure that the notes stop playing when lifted, and allows for swapping between instruments fluently
+  // and makes sure that when a key is lifted, it will stop playing no matter the instrument it was initiated on.
+  // If each instrument stopped in different ifs like they are initiatedthen swapping instruments could prevent a
+  // note from stopping.
+  if (event.key === "a") {
+    synth.triggerRelease("C4", Tone.now());
+    synthAM.triggerRelease("C4", Tone.now());
+    synthMONO.triggerRelease("C4", Tone.now());
+    synthFM.triggerRelease("C4", Tone.now());
+  } else if (event.key === "s") {
+    synth.triggerRelease("D4", Tone.now());
+    synthAM.triggerRelease("D4", Tone.now());
+    synthMONO.triggerRelease("D4", Tone.now());
+    synthFM.triggerRelease("D4", Tone.now());
+  } else if (event.key === "d") {
+    synth.triggerRelease("E4", Tone.now());
+    synthAM.triggerRelease("E4", Tone.now());
+    synthMONO.triggerRelease("E4", Tone.now());
+    synthFM.triggerRelease("E4", Tone.now());
+  } else if (event.key === "f") {
+    synth.triggerRelease("F4", Tone.now());
+    synthAM.triggerRelease("F4", Tone.now());
+    synthMONO.triggerRelease("F4", Tone.now());
+    synthFM.triggerRelease("F4", Tone.now());
+  } else if (event.key === "g") {
+    synth.triggerRelease("G4", Tone.now());
+    synthAM.triggerRelease("G4", Tone.now());
+    synthMONO.triggerRelease("G4", Tone.now());
+    synthFM.triggerRelease("G4", Tone.now());
+  } else if (event.key === "h") {
+    synth.triggerRelease("A4", Tone.now());
+    synthAM.triggerRelease("A4", Tone.now());
+    synthMONO.triggerRelease("A4", Tone.now());
+    synthFM.triggerRelease("A4", Tone.now());
+  } else if (event.key === "j") {
+    synth.triggerRelease("B4", Tone.now());
+    synthAM.triggerRelease("B4", Tone.now());
+    synthMONO.triggerRelease("B4", Tone.now());
+    synthFM.triggerRelease("B4", Tone.now());
+  } else if (event.key === "k") {
+    synth.triggerRelease("C5", Tone.now());
+    synthAM.triggerRelease("C5", Tone.now());
+    synthMONO.triggerRelease("C5", Tone.now());
+    synthFM.triggerRelease("C5", Tone.now());
   }
 }
 
 // ---------- Setup ----------
 // Setup is run once, at the start of the program. It sets everything up for us!
 function setup() {
-  update(); // start the update loop
-  use(); // start the use loop
-
   // Put your event listener code here
   window.addEventListener("keydown", keyDown);
   window.addEventListener("keyup", keyUp);
