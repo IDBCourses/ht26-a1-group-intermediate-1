@@ -1,79 +1,115 @@
-/*
- * IDB Programming: A1 Modelling — a musical instrument
- *
- * All of the code for your instrument goes in this file. It's split into sections:
- *   settings — the "fixed" parts of your program
- *   state    — the parts of your program that change over time
- *   sound    — the Tone.js instruments and effects
- *   controls — what happens when a key goes down or comes up
- *   setup    — starts everything
- *
- * There is no loop in this assignment. Nothing happens until the player presses
- * a key, and every key event follows the same two steps:
- *   1. update: change the state, based on which key it was
- *   2. use:    make sound from the state
- *
- * Tone.js documentation: https://tonejs.github.io/docs/15.1.22/
- */
-
 // ---------- Settings ----------
 // Settings variables should contain all of the "fixed" parts of your programs
 // For example: which key does what, which notes you can play, the tempo.
-
+let keyboardToNotesSettings = new Map([
+  ["a", "C4"],
+  ["s", "D4"],
+  ["d", "E4"],
+  ["f", "F4"],
+  ["g", "G4"],
+  ["h", "A4"],
+  ["j", "B4"],
+]);
 // ---------- State ----------
 // State variables are the parts of your program that change over time.
 // For example: which octave you're playing in, or whether a drone is on.
 
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
-const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // instrument 1
-const synthAM = new Tone.PolySynth(Tone.AMSynth).toDestination(); // instrument 2
-const synthMONO = new Tone.PolySynth(Tone.MonoSynth).toDestination(); // instrument 3
-const synthFM = new Tone.PolySynth(Tone.FMSynth).toDestination(); // instrument 4
+//
+const newPoly = (synth) => {
+  return new Tone.PolySynth(synth).toDestination();
+};
 
-let keyboard = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k'];
-let notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
-let keyboardToNotes = new Map();
-for (let index = 0; index < notes.length; index++) {
-  keyboardToNotes.set(keyboard[index], notes[index]);
-}
+const Instruments = [
+  newPoly(Tone.Synth),
+  newPoly(Tone.AMSynth),
+  newPoly(Tone.MonoSynth),
+  newPoly(Tone.FMSynth),
+];
+// ---------- State ----------
+// State variables are the parts of your program that change over time.
+// For example: which octave you're playing in, or whether a drone is on.
+let instrumentsIndex = 0;
+
+// ---------- Sound ----------
+// Make the instruments and plug them into the speakers.
+//
 
 //Setting the defualt to the notes of Mode1
-let index = 0;
-const Instruments = [synth, synthAM, synthMONO, synthFM];
-
 // ---------- Controls ----------
 // Runs every time a key goes down.
+
+const octaveUpdate = function (octaveEvent) {
+  const octaveAddSub = (command) => {
+    switch (command) {
+      case "o":
+        return -1;
+      case "i":
+        return +1;
+      default:
+        return 0;
+    }
+  };
+
+  // % by 5 because we allow 4 octaves only (1..4)
+  let octaveState =
+    (octaveAddSub(octaveEvent) +
+      Number(keyboardToNotesSettings.get("a").slice(1, 2))) %
+    5;
+
+  keyboardToNotesSettings.forEach((note, kKey) => {
+    keyboardToNotesSettings.set(
+      kKey,
+      note.slice(0, -1) + (octaveState + !octaveState),
+    );
+  });
+};
+
 function keyDown(event) {
   Tone.start(); // browsers only allow sound after the player has pressed something
+  //Checking for the octave buttons thus enabling an octave change
 
   // Holding a key down sends keydown again and again. Only react to the first one.
   if (event.repeat === false) {
-    let currentNote = keyboardToNotes.get(event.key);
+    let currentNote = keyboardToNotesSettings.get(event.key);
     console.log("Key down:", event.key);
     console.log("Current Note:", currentNote);
+    octaveUpdate(event.key);
 
-    //Checking for the mode buttons thus enabling an instrument
-    if (parseInt(event.key) >= 1 && parseInt(event.key) <= 4) {
-      index = parseInt(event.key) - 1;
+    instrumentsIndex =
+      parseInt(event.key) >= 1 && parseInt(event.key) <= 4
+        ? parseInt(event.key) - 1
+        : instrumentsIndex;
+
+    if (currentNote) {
+      Instruments.at(instrumentsIndex).triggerAttack(currentNote, Tone.now());
     }
-    Instruments.at(index).triggerAttack(currentNote, Tone.now());
   }
 }
 
 // Runs every time a key comes up.
 function keyUp(event) {
-    let keyNote = keyboardToNotes.get(event.key);
-    console.log("Current Note:", keyNote);
-    console.log("Key up:", event.key);
+  let keyNote = keyboardToNotesSettings.get(event.key);
+  console.log("Current Note:", keyNote);
+  console.log("Key up:", event.key);
   //This makes sure that the notes stop playing when lifted, and allows for swapping between instruments fluently
   // and makes sure that when a key is lifted, it will stop playing no matter the instrument it was initiated on.
   // If each instrument stopped in different ifs like they are initiatedthen swapping instruments could prevent a
   // note from stopping.
 
-  for (const instrument of Instruments) {
-     instrument.triggerRelease(keyNote, Tone.now());
+  // it returns in the browser console some weird dumb error of keyNote
+  // not being defined
+  if (typeof keyNote != "undefined") {
+    for (const instrument of Instruments) {
+      for (let i = 1; i <= 4; i++) {
+        instrument.triggerRelease(
+          keyNote.toString().slice(0, -1) + i,
+          Tone.now(),
+        );
+      }
     }
+  }
 }
 
 // ---------- Setup ----------
