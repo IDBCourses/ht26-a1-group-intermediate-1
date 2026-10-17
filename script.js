@@ -44,13 +44,25 @@ let newKeyboardToNotes = new Map([
 ]);
 
 //Setting the defualt to the notes of Mode1
-let index = 0;
 const Instruments = [synth, synthAM, synthMONO, synthFM];
 // ---------- Controls ----------
 // Runs every time a key goes down.
 
 // reusable function
-const octaveUpdate = function () {
+const octaveUpdate = function (octaveEvent) {
+  const octaveAddSub = (command) => {
+    switch (command) {
+      case "o":
+        return -1;
+      case "i":
+        return +1;
+      default:
+        return 0;
+    }
+  }
+  octave = Math.abs((octave + octaveAddSub(octaveEvent.key)) % 5);
+  octave += !octave;
+
   newKeyboardToNotes.forEach((note, kKey) => {
     newKeyboardToNotes.set(kKey, note.slice(0, -1) + octave);
   });
@@ -65,26 +77,11 @@ function keyDown(event) {
     let currentNote = newKeyboardToNotes.get(event.key);
     console.log("Key down:", event.key);
     console.log("Current Note:", currentNote);
-
-    if (event.key === "i") {
-      console.log("hello from I");
-      octave = octave == 4 ? 1 : octave + 1;
-      octaveUpdate();
-      console.log("Octave Up:" + octave);
-      //return;
-    }
-    //Checking for the octave buttons thus enabling an octave change
-    else if (event.key === "o") {
-      console.log("hello from O");
-      octave = octave == 1 ? 4 : octave - 1;
-      octaveUpdate();
-      console.log("Octave Down:" + octave);
-      //return;
-    }
+    octaveUpdate();
 
     //Checking for the mode buttons thus enabling an instrument
     if (parseInt(event.key) >= 1 && parseInt(event.key) <= 4) {
-      index = parseInt(event.key) - 1;
+      var index = parseInt(event.key) - 1;
     }
     Instruments.at(index).triggerAttack(currentNote, Tone.now());
   }
