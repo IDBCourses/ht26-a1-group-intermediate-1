@@ -32,52 +32,51 @@ const synthMONO = new Tone.PolySynth(Tone.MonoSynth).toDestination(); // instrum
 const synthFM = new Tone.PolySynth(Tone.FMSynth).toDestination(); // instrument 4
 
 let octave = 4;
-let keyboard = ['a', 's', 'd', 'f', 'g', 'h', 'j'];
-let notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
-let notesAlone = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-let keyboardToNotes = new Map();
-for (let index = 0; index < notes.length; index++) {
-  keyboardToNotes.set(keyboard[index], notes[index]);
-}
+
+let newKeyboardToNotes = new Map([
+  ["a", "C4"],
+  ["s", "D4"],
+  ["d", "E4"],
+  ["f", "F4"],
+  ["g", "G4"],
+  ["h", "A4"],
+  ["j", "B4"],
+]);
 
 //Setting the defualt to the notes of Mode1
 let index = 0;
 const Instruments = [synth, synthAM, synthMONO, synthFM];
-
 // ---------- Controls ----------
 // Runs every time a key goes down.
-function octaveUpdate(){
-      for (let i = 0; i < notesAlone.length; i++) {
-      notes[i] = notesAlone[i] + octave;
-      console.log("Notes:", notes[i]);
-    }
 
-    for (let index = 0; index < notes.length; index++) {
-      keyboardToNotes.set(keyboard[index], notes[index]);
-      console.log("Keyboard to Notes:", keyboardToNotes.get(keyboard[index]));
-    }
-}
+// reusable function
+const octaveUpdate = function () {
+  newKeyboardToNotes.forEach((note, kKey) => {
+    newKeyboardToNotes.set(kKey, note.slice(0, -1) + octave);
+  });
+};
 
 function keyDown(event) {
   Tone.start(); // browsers only allow sound after the player has pressed something
-      //Checking for the octave buttons thus enabling an octave change
-    
+  //Checking for the octave buttons thus enabling an octave change
+
   // Holding a key down sends keydown again and again. Only react to the first one.
   if (event.repeat === false) {
-    let currentNote = keyboardToNotes.get(event.key);
+    let currentNote = newKeyboardToNotes.get(event.key);
     console.log("Key down:", event.key);
     console.log("Current Note:", currentNote);
-    
-  if (event.key === "i") {
-      octave = octave + 1;
+
+    if (event.key === "i") {
+      console.log("hello from I");
+      octave = octave == 4 ? 1 : octave + 1;
       octaveUpdate();
       console.log("Octave Up:" + octave);
       //return;
     }
     //Checking for the octave buttons thus enabling an octave change
     else if (event.key === "o") {
-      console.log("hello");
-      octave = octave - 1;
+      console.log("hello from O");
+      octave = octave == 1 ? 4 : octave - 1;
       octaveUpdate();
       console.log("Octave Down:" + octave);
       //return;
@@ -93,17 +92,24 @@ function keyDown(event) {
 
 // Runs every time a key comes up.
 function keyUp(event) {
-    let keyNote = keyboardToNotes.get(event.key);
-    console.log("Current Note:", keyNote);
-    console.log("Key up:", event.key);
+  let keyNote = newKeyboardToNotes.get(event.key);
+  console.log("Current UPPED Note:", keyNote);
+  console.log("Key up:", event.key);
   //This makes sure that the notes stop playing when lifted, and allows for swapping between instruments fluently
   // and makes sure that when a key is lifted, it will stop playing no matter the instrument it was initiated on.
   // If each instrument stopped in different ifs like they are initiatedthen swapping instruments could prevent a
   // note from stopping.
 
+  // it returns in the browser console some weird dumb error of keyNote
+  // not being defined
   for (const instrument of Instruments) {
-     instrument.triggerRelease(keyNote, Tone.now());
+    for (let i = 1; i <= 4; i++) {
+      instrument.triggerRelease(
+        keyNote.toString().slice(0, -1) + i,
+        Tone.now(),
+      );
     }
+  }
 }
 
 // ---------- Setup ----------
