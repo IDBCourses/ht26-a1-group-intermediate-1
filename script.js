@@ -76,7 +76,7 @@ function keyDown(event) {
     let currentNote = keyboardToNotesSettings.get(event.key);
     console.log("Key down:", event.key);
     console.log("Current Note:", currentNote);
-    _octaveUpdate();
+    _octaveUpdate(event);
 
     //Checking for the mode buttons thus enabling an instrument
     if (parseInt(event.key) >= 1 && parseInt(event.key) <= 4) {
