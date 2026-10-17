@@ -34,15 +34,10 @@ const synthAM = new Tone.PolySynth(Tone.AMSynth).toDestination(); // instrument 
 const synthMONO = new Tone.PolySynth(Tone.MonoSynth).toDestination(); // instrument 3
 const synthFM = new Tone.PolySynth(Tone.FMSynth).toDestination(); // instrument 4
 
-<<<<<<< HEAD
-let keyboard = ["a", "s", "d", "f", "g", "h", "j", "k"];
-let notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"];
-=======
 let octave = 4;
 let keyboard = ['a', 's', 'd', 'f', 'g', 'h', 'j'];
 let notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
 let notesAlone = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
->>>>>>> 7d049d3 (I added an octave function)
 let keyboardToNotes = new Map();
 for (let index = 0; index < notes.length; index++) {
   keyboardToNotes.set(keyboard[index], notes[index]);
@@ -73,13 +68,13 @@ function octaveUpdate(){
 function keyDown(event) {
   Tone.start(); // browsers only allow sound after the player has pressed something
       //Checking for the octave buttons thus enabling an octave change
-    
+
   // Holding a key down sends keydown again and again. Only react to the first one.
   if (event.repeat === false) {
     let currentNote = keyboardToNotes.get(event.key);
     console.log("Key down:", event.key);
     console.log("Current Note:", currentNote);
-    
+
   if (event.key === "i") {
       octave = octave + 1;
       octaveUpdate();
