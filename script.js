@@ -98,7 +98,9 @@ function keyUp(event) {
   // If each instrument stopped in different ifs like they are initiatedthen swapping instruments could prevent a
   // note from stopping.
 
-  if (typeof keyNote !== "undefined") {
+  // it returns in the browser console some weird dumb error of keyNote
+  // not being defined
+  if (typeof keyNote != "undefined") {
     for (const instrument of Instruments) {
       for (let i = 1; i <= 4; i++) {
         instrument.triggerRelease(
