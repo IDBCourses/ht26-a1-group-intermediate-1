@@ -43,11 +43,6 @@ const synthFM = new Tone.PolySynth(Tone.FMSynth).toDestination(); // instrument 
 
 //Setting the defualt to the notes of Mode1
 const Instruments = [synth, synthAM, synthMONO, synthFM];
-
-let recording = false;
-let recordedNotes = [];
-let isPlaying = false;
-
 // ---------- Controls ----------
 // Runs every time a key goes down.
 
@@ -82,48 +77,6 @@ function keyDown(event) {
     console.log("Key down:", event.key);
     console.log("Current Note:", currentNote);
     _octaveUpdate();
-
-    // Press "8" to record
-    if (event.key === "8") {
-      recording = true;
-      recordedNotes = [];
-    }
-
-    // save pressed note to array recordNotes
-    if (recording === true && currentNote) {
-      if (recordedNotes.length < 8) {
-        recordedNotes.push(currentNote);
-        console.log(recordedNotes);
-        showRecording.innerHTML = `Your song:<br>${recordedNotes.join(" - ")}`;
-      }
-    }
-
-    // stop recordning
-    if (event.key === "9") {
-      recording = false;
-    }
-
-    if (event.key === "0" && isPlaying === false && recordedNotes.length > 0) {
-      isPlaying = true;
-      for (let i = 0; i < recordedNotes.length; i++) {
-        Instruments.at(index).triggerAttackRelease(
-          recordedNotes[i],
-          0.25,
-          Tone.now() + i * 0.25,
-        );
-      }
-      setTimeout(() => {
-        isPlaying = false;
-      }, recordedNotes.length * 250);
-    }
-
-    // Clear recording
-    if (event.key === " ") {
-      recording = false;
-      recordedNotes = [];
-      console.log("Recording cleared:", recordedNotes);
-      showRecording.innerText = "";
-    }
 
     //Checking for the mode buttons thus enabling an instrument
     if (parseInt(event.key) >= 1 && parseInt(event.key) <= 4) {
