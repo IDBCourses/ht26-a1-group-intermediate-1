@@ -19,24 +19,7 @@
 // ---------- Settings ----------
 // Settings variables should contain all of the "fixed" parts of your programs
 // For example: which key does what, which notes you can play, the tempo.
-
-// ---------- State ----------
-// State variables are the parts of your program that change over time.
-// For example: which octave you're playing in, or whether a drone is on.
-
-// ---------- Sound ----------
-// Make the instruments and plug them into the speakers.
-
-const showRecording = document.getElementById("show-recording");
-
-const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // instrument 1
-const synthAM = new Tone.PolySynth(Tone.AMSynth).toDestination(); // instrument 2
-const synthMONO = new Tone.PolySynth(Tone.MonoSynth).toDestination(); // instrument 3
-const synthFM = new Tone.PolySynth(Tone.FMSynth).toDestination(); // instrument 4
-
-let octave = 4;
-
-let newKeyboardToNotes = new Map([
+let keyboardToNotesSettings = new Map([
   ["a", "C4"],
   ["s", "D4"],
   ["d", "E4"],
@@ -45,6 +28,18 @@ let newKeyboardToNotes = new Map([
   ["h", "A4"],
   ["j", "B4"],
 ]);
+// ---------- State ----------
+// State variables are the parts of your program that change over time.
+// For example: which octave you're playing in, or whether a drone is on.
+let octaveState = 4;
+let index = 0;
+
+// ---------- Sound ----------
+// Make the instruments and plug them into the speakers.
+const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // instrument 1
+const synthAM = new Tone.PolySynth(Tone.AMSynth).toDestination(); // instrument 2
+const synthMONO = new Tone.PolySynth(Tone.MonoSynth).toDestination(); // instrument 3
+const synthFM = new Tone.PolySynth(Tone.FMSynth).toDestination(); // instrument 4
 
 //Setting the defualt to the notes of Mode1
 const Instruments = [synth, synthAM, synthMONO, synthFM];
@@ -57,7 +52,7 @@ let isPlaying = false;
 // Runs every time a key goes down.
 
 // reusable function
-const octaveUpdate = function (octaveEvent) {
+const _octaveUpdate = function (octaveEvent) {
   const octaveAddSub = (command) => {
     switch (command) {
       case "o":
@@ -67,12 +62,13 @@ const octaveUpdate = function (octaveEvent) {
       default:
         return 0;
     }
-  }
-  octave = Math.abs((octave + octaveAddSub(octaveEvent.key)) % 5);
-  octave += !octave;
+  };
 
-  newKeyboardToNotes.forEach((note, kKey) => {
-    newKeyboardToNotes.set(kKey, note.slice(0, -1) + octave);
+  octaveState = (octaveState + octaveAddSub(octaveEvent.key)) % 5;
+  octaveState += !octaveState; // !!! ensures non zero and usigned numbers
+
+  keyboardToNotesSettings.forEach((note, kKey) => {
+    keyboardToNotesSettings.set(kKey, note.slice(0, -1) + octaveState);
   });
 };
 
@@ -82,28 +78,10 @@ function keyDown(event) {
 
   // Holding a key down sends keydown again and again. Only react to the first one.
   if (event.repeat === false) {
-    let currentNote = newKeyboardToNotes.get(event.key);
+    let currentNote = keyboardToNotesSettings.get(event.key);
     console.log("Key down:", event.key);
     console.log("Current Note:", currentNote);
-<<<<<<< HEAD
-
-  if (event.key === "i") {
-      octave = octave + 1;
-      octaveUpdate();
-      console.log("Octave Up:" + octave);
-      //return;
-    }
-    //Checking for the octave buttons thus enabling an octave change
-    else if (event.key === "o") {
-      console.log("hello from O");
-      octave = octave == 1 ? 4 : octave - 1;
-      octaveUpdate();
-      console.log("Octave Down:" + octave);
-      //return;
-    }
-=======
-    octaveUpdate();
->>>>>>> 6950299 (modified octaveUpdate)
+    _octaveUpdate();
 
     // Press "8" to record
     if (event.key === "8") {
@@ -149,7 +127,7 @@ function keyDown(event) {
 
     //Checking for the mode buttons thus enabling an instrument
     if (parseInt(event.key) >= 1 && parseInt(event.key) <= 4) {
-      var index = parseInt(event.key) - 1;
+      index = parseInt(event.key) - 1;
     }
     if (currentNote) {
       Instruments.at(index).triggerAttack(currentNote, Tone.now());
@@ -167,14 +145,14 @@ function keyUp(event) {
   // If each instrument stopped in different ifs like they are initiatedthen swapping instruments could prevent a
   // note from stopping.
 
-  // it returns in the browser console some weird dumb error of keyNote
-  // not being defined
-  for (const instrument of Instruments) {
-    for (let i = 1; i <= 4; i++) {
-      instrument.triggerRelease(
-        keyNote.toString().slice(0, -1) + i,
-        Tone.now(),
-      );
+  if (typeof keyNote !== "undefined") {
+    for (const instrument of Instruments) {
+      for (let i = 1; i <= 4; i++) {
+        instrument.triggerRelease(
+          keyNote.toString().slice(0, -1) + i,
+          Tone.now(),
+        );
+      }
     }
   }
 }
