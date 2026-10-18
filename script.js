@@ -13,6 +13,7 @@ let keyboardToNotesSettings = new Map([
 // ---------- State ----------
 // State variables are the parts of your program that change over time.
 // For example: which octave you're playing in, or whether a drone is on.
+let instrumentsIndex = 0;
 
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
@@ -27,14 +28,6 @@ const Instruments = [
   newPoly(Tone.MonoSynth),
   newPoly(Tone.FMSynth),
 ];
-// ---------- State ----------
-// State variables are the parts of your program that change over time.
-// For example: which octave you're playing in, or whether a drone is on.
-let instrumentsIndex = 0;
-
-// ---------- Sound ----------
-// Make the instruments and plug them into the speakers.
-//
 
 //Setting the defualt to the notes of Mode1
 // ---------- Controls ----------
