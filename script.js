@@ -1,21 +1,3 @@
-/*
- * IDB Programming: A1 Modelling — a musical instrument
- *
- * All of the code for your instrument goes in this file. It's split into sections:
- *   settings — the "fixed" parts of your program
- *   state    — the parts of your program that change over time
- *   sound    — the Tone.js instruments and effects
- *   controls — what happens when a key goes down or comes up
- *   setup    — starts everything
- *
- * There is no loop in this assignment. Nothing happens until the player presses
- * a key, and every key event follows the same two steps:
- *   1. update: change the state, based on which key it was
- *   2. use:    make sound from the state
- *
- * Tone.js documentation: https://tonejs.github.io/docs/15.1.22/
- */
-
 // ---------- Settings ----------
 // Settings variables should contain all of the "fixed" parts of your programs
 // For example: which key does what, which notes you can play, the tempo.
@@ -28,42 +10,31 @@ let keyboardToNotesSettings = new Map([
   ["h", "A4"],
   ["j", "B4"],
 ]);
+
 // ---------- State ----------
 // State variables are the parts of your program that change over time.
 // For example: which octave you're playing in, or whether a drone is on.
-let octaveState = 4;
-let index = 0;
+let instrumentsIndex = 0;
 
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
-const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // instrument 1
-const synthAM = new Tone.PolySynth(Tone.AMSynth).toDestination(); // instrument 2
-const synthMONO = new Tone.PolySynth(Tone.MonoSynth).toDestination(); // instrument 3
-const synthFM = new Tone.PolySynth(Tone.FMSynth).toDestination(); // instrument 4
+//
+const newPoly = (synth) => {
+  return new Tone.PolySynth(synth).toDestination();
+};
 
-<<<<<<< HEAD
-=======
-let octave = 4;
+const Instruments = [
+  newPoly(Tone.Synth),
+  newPoly(Tone.AMSynth),
+  newPoly(Tone.MonoSynth),
+  newPoly(Tone.FMSynth),
+];
 
-let newKeyboardToNotes = new Map([
-  ["a", "C4"],
-  ["s", "D4"],
-  ["d", "E4"],
-  ["f", "F4"],
-  ["g", "G4"],
-  ["h", "A4"],
-  ["j", "B4"],
-]);
-
->>>>>>> 92c71a5 (updated octave update function and fixed key up for different octaves)
 //Setting the defualt to the notes of Mode1
-const Instruments = [synth, synthAM, synthMONO, synthFM];
 // ---------- Controls ----------
 // Runs every time a key goes down.
 
-// reusable function
-<<<<<<< HEAD
-const _octaveUpdate = function (octaveEvent) {
+const octaveUpdate = function (octaveEvent) {
   const octaveAddSub = (command) => {
     switch (command) {
       case "o":
@@ -75,16 +46,17 @@ const _octaveUpdate = function (octaveEvent) {
     }
   };
 
-  octaveState = (octaveState + octaveAddSub(octaveEvent.key)) % 5;
-  octaveState += !octaveState; // !!! ensures non zero and usigned numbers
+  // % by 5 because we allow 4 octaves only (1..4)
+  let octaveState =
+    (octaveAddSub(octaveEvent) +
+      Number(keyboardToNotesSettings.get("a").slice(1, 2))) %
+    5;
 
   keyboardToNotesSettings.forEach((note, kKey) => {
-    keyboardToNotesSettings.set(kKey, note.slice(0, -1) + octaveState);
-=======
-const octaveUpdate = function () {
-  newKeyboardToNotes.forEach((note, kKey) => {
-    newKeyboardToNotes.set(kKey, note.slice(0, -1) + octave);
->>>>>>> 92c71a5 (updated octave update function and fixed key up for different octaves)
+    keyboardToNotesSettings.set(
+      kKey,
+      note.slice(0, -1) + (octaveState + !octaveState),
+    );
   });
 };
 
@@ -94,52 +66,25 @@ function keyDown(event) {
 
   // Holding a key down sends keydown again and again. Only react to the first one.
   if (event.repeat === false) {
-<<<<<<< HEAD
     let currentNote = keyboardToNotesSettings.get(event.key);
     console.log("Key down:", event.key);
     console.log("Current Note:", currentNote);
-    _octaveUpdate();
-=======
-    let currentNote = newKeyboardToNotes.get(event.key);
-    console.log("Key down:", event.key);
-    console.log("Current Note:", currentNote);
+    octaveUpdate(event.key);
 
-    if (event.key === "i") {
-      console.log("hello from I");
-      octave = octave == 4 ? 1 : octave + 1;
-      octaveUpdate();
-      console.log("Octave Up:" + octave);
-      //return;
-    }
-    //Checking for the octave buttons thus enabling an octave change
-    else if (event.key === "o") {
-      console.log("hello from O");
-      octave = octave == 1 ? 4 : octave - 1;
-      octaveUpdate();
-      console.log("Octave Down:" + octave);
-      //return;
-    }
->>>>>>> 92c71a5 (updated octave update function and fixed key up for different octaves)
-
-    //Checking for the mode buttons thus enabling an instrument
-    if (parseInt(event.key) >= 1 && parseInt(event.key) <= 4) {
-      index = parseInt(event.key) - 1;
-    }
+    instrumentsIndex =
+      parseInt(event.key) >= 1 && parseInt(event.key) <= 4
+        ? parseInt(event.key) - 1
+        : instrumentsIndex;
     if (currentNote) {
-      Instruments.at(index).triggerAttack(currentNote, Tone.now());
+      Instruments.at(instrumentsIndex).triggerAttack(currentNote, Tone.now());
     }
   }
 }
 
 // Runs every time a key comes up.
 function keyUp(event) {
-<<<<<<< HEAD
-  let keyNote = keyboardToNotes.get(event.key);
+  let keyNote = keyboardToNotesSettings.get(event.key);
   console.log("Current Note:", keyNote);
-=======
-  let keyNote = newKeyboardToNotes.get(event.key);
-  console.log("Current UPPED Note:", keyNote);
->>>>>>> 92c71a5 (updated octave update function and fixed key up for different octaves)
   console.log("Key up:", event.key);
   //This makes sure that the notes stop playing when lifted, and allows for swapping between instruments fluently
   // and makes sure that when a key is lifted, it will stop playing no matter the instrument it was initiated on.
@@ -148,7 +93,6 @@ function keyUp(event) {
 
   // it returns in the browser console some weird dumb error of keyNote
   // not being defined
-<<<<<<< HEAD
   if (typeof keyNote != "undefined") {
     for (const instrument of Instruments) {
       for (let i = 1; i <= 4; i++) {
@@ -157,14 +101,6 @@ function keyUp(event) {
           Tone.now(),
         );
       }
-=======
-  for (const instrument of Instruments) {
-    for (let i = 1; i <= 4; i++) {
-      instrument.triggerRelease(
-        keyNote.toString().slice(0, -1) + i,
-        Tone.now(),
-      );
->>>>>>> 92c71a5 (updated octave update function and fixed key up for different octaves)
     }
   }
 }
