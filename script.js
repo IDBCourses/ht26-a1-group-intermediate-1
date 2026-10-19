@@ -81,7 +81,6 @@ function keyDown(event) {
       if (recordedNotes.length < 8) {
         recordedNotes.push(currentNote);
         console.log(recordedNotes);
-        showRecording.innerHTML = `Your song:<br>${recordedNotes.join(" - ")}`;
       }
     }
 
@@ -110,7 +109,6 @@ function keyDown(event) {
       recording = false;
       recordedNotes = [];
       console.log("Recording cleared:", recordedNotes);
-      showRecording.innerText = "";
     }
 
     index =
