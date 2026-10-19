@@ -10,10 +10,15 @@ let keyboardToNotesSettings = new Map([
   ["h", "A"],
   ["j", "B"],
 ]);
+const showRecording = document.getElementById("show-recording");
+let recording = false;
+let recordedNotes = [];
+let isPlaying = false;
 // ---------- State ----------
+//
 // State variables are the parts of your program that change over time.
 // For example: which octave you're playing in, or whether a drone is on.
-let instrumentsIndex = 0;
+let index = 0;
 let octaveState = 4;
 
 // ---------- Sound ----------
@@ -48,12 +53,10 @@ const octaveUpdate = function (octaveEvent) {
 
   // % by 5 because we allow 4 octaves only (1..4)
   octaveState = (octaveState + octaveAddSub(octaveEvent)) % 5;
+  octaveState += !octaveState;
 
   keyboardToNotesSettings.forEach((note, kKey) => {
-    keyboardToNotesSettings.set(
-      kKey,
-      Array.from(note)[0] + (octaveState + !octaveState),
-    );
+    keyboardToNotesSettings.set(kKey, Array.from(note)[0] + octaveState);
   });
 };
 
@@ -68,13 +71,55 @@ function keyDown(event) {
     console.log("Current Note:", currentNote);
     octaveUpdate(event.key);
 
-    instrumentsIndex =
+    if (event.key === "8") {
+      recording = true;
+      recordedNotes = [];
+    }
+
+    // save pressed note to array recordNotes
+    if (recording === true && currentNote) {
+      if (recordedNotes.length < 8) {
+        recordedNotes.push(currentNote);
+        console.log(recordedNotes);
+        showRecording.innerHTML = `Your song:<br>${recordedNotes.join(" - ")}`;
+      }
+    }
+
+    // stop recordning
+    if (event.key === "9") {
+      recording = false;
+    }
+
+    if (event.key === "0" && isPlaying === false && recordedNotes.length > 0) {
+      isPlaying = true;
+      for (let i = 0; i < recordedNotes.length; i++) {
+        Instruments.at(index).triggerAttackRelease(
+          recordedNotes[i],
+          0.25,
+          Tone.now() + i * 0.25,
+        );
+      }
+
+      setTimeout(() => {
+        isPlaying = false;
+      }, recordedNotes.length * 250);
+    }
+
+    // Clear recording
+    if (event.key === " ") {
+      recording = false;
+      recordedNotes = [];
+      console.log("Recording cleared:", recordedNotes);
+      showRecording.innerText = "";
+    }
+
+    index =
       parseInt(event.key) >= 1 && parseInt(event.key) <= 4
         ? parseInt(event.key) - 1
-        : instrumentsIndex;
+        : index;
 
     if (currentNote) {
-      Instruments.at(instrumentsIndex).triggerAttack(currentNote, Tone.now());
+      Instruments.at(index).triggerAttack(currentNote, Tone.now());
     }
   }
 }
