@@ -26,13 +26,16 @@
 
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
+
+const showRecording = document.getElementById("show-recording");
+
 const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // instrument 1
 const synthAM = new Tone.PolySynth(Tone.AMSynth).toDestination(); // instrument 2
 const synthMONO = new Tone.PolySynth(Tone.MonoSynth).toDestination(); // instrument 3
 const synthFM = new Tone.PolySynth(Tone.FMSynth).toDestination(); // instrument 4
 
-let keyboard = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k'];
-let notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
+let keyboard = ["a", "s", "d", "f", "g", "h", "j", "k"];
+let notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"];
 let keyboardToNotes = new Map();
 for (let index = 0; index < notes.length; index++) {
   keyboardToNotes.set(keyboard[index], notes[index]);
@@ -41,6 +44,10 @@ for (let index = 0; index < notes.length; index++) {
 //Setting the defualt to the notes of Mode1
 let index = 0;
 const Instruments = [synth, synthAM, synthMONO, synthFM];
+
+let recording = false;
+let recordedNotes = [];
+let isPlaying = false;
 
 // ---------- Controls ----------
 // Runs every time a key goes down.
@@ -53,27 +60,73 @@ function keyDown(event) {
     console.log("Key down:", event.key);
     console.log("Current Note:", currentNote);
 
+    // Press "8" to record
+    if (event.key === "8") {
+      recording = true;
+      recordedNotes = [];
+    }
+
+    // save pressed note to array recordNotes
+    if (recording === true && currentNote) {
+      if (recordedNotes.length < 8) {
+        recordedNotes.push(currentNote);
+        console.log(recordedNotes);
+        showRecording.innerHTML = `Your song:<br>${recordedNotes.join(" - ")}`;
+      }
+    }
+
+    // stop recordning
+    if (event.key === "9") {
+      recording = false;
+    }
+
+    if (event.key === "0" && isPlaying === false && recordedNotes.length > 0) {
+      isPlaying = true;
+      for (let i = 0; i < recordedNotes.length; i++) {
+        Instruments.at(index).triggerAttackRelease(
+          recordedNotes[i],
+          0.25,
+          Tone.now() + i * 0.25,
+        );
+      }
+      setTimeout(() => {
+        isPlaying = false;
+      }, recordedNotes.length * 250);
+    }
+
+    // Clear recording
+    if (event.key === " ") {
+      recording = false;
+      recordedNotes = [];
+      console.log("Recording cleared:", recordedNotes);
+      showRecording.innerText = "";
+    }
+
     //Checking for the mode buttons thus enabling an instrument
     if (parseInt(event.key) >= 1 && parseInt(event.key) <= 4) {
       index = parseInt(event.key) - 1;
     }
-    Instruments.at(index).triggerAttack(currentNote, Tone.now());
+    if (currentNote) {
+      Instruments.at(index).triggerAttack(currentNote, Tone.now());
+    }
   }
 }
 
 // Runs every time a key comes up.
 function keyUp(event) {
-    let keyNote = keyboardToNotes.get(event.key);
-    console.log("Current Note:", keyNote);
-    console.log("Key up:", event.key);
+  let keyNote = keyboardToNotes.get(event.key);
+  console.log("Current Note:", keyNote);
+  console.log("Key up:", event.key);
   //This makes sure that the notes stop playing when lifted, and allows for swapping between instruments fluently
   // and makes sure that when a key is lifted, it will stop playing no matter the instrument it was initiated on.
   // If each instrument stopped in different ifs like they are initiatedthen swapping instruments could prevent a
   // note from stopping.
 
-  for (const instrument of Instruments) {
-     instrument.triggerRelease(keyNote, Tone.now());
+  if (keyNote) {
+    for (const instrument of Instruments) {
+      instrument.triggerRelease(keyNote, Tone.now());
     }
+  }
 }
 
 // ---------- Setup ----------
