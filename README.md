@@ -1,19 +1,46 @@
 # Our instrument
 
-**Play it here:** <!-- Paste your GitHub Pages link here, e.g. https://idbcourses.github.io/ht26-a1-group-01/ -->
+**Play it here:**
+https://idbcourses.github.io/ht26-a1-group-intermediate-1/
 
 **Group:** <!-- Names of everyone in the group -->
-
+Teddie Finström
+Iordache Paul
+Diego Arias
+Christian Norén
 <!-- One or two sentences: what kind of instrument is it, and what is it like to play? -->
 
 ## How to play
+Switch between instruments / sounds - 1, 2, 3, 4
+Keys to play notes - A, S, D, F, G, H, J, K
+Change Octave - I to increase and O to decrease
+
+Record and Playback:
+Start Recording (Press keys you want to record) - 8
+Finish and turn off recording - 9
+Play back recording - 0
+Clear Recording - Spacebar
 
 <!-- Which keys do what? Fill in the table, and add a row for every key or group of keys. -->
 
-| Key | What it does                                                |
-| --- | ----------------------------------------------------------- |
-| `A` | Plays a C4 while you hold it down (the example: replace it) |
-|     |                                                             |
+### Keyboard Controls
+
+| Key | What it does |
+| --- | --- |
+| `A` | Plays C in the current octave |
+| `S` | Plays D in the current octave |
+| `D` | Plays E in the current octave |
+| `F` | Plays F in the current octave |
+| `G` | Plays G in the current octave |
+| `H` | Plays A in the current octave |
+| `J` | Plays B in the current octave |
+| `1–4` | Switches between instruments |
+| `I` | Increases the octave |
+| `O` | Decreases the octave |
+| `8` | Starts recording (max 8 notes) |
+| `9` | Stops recording |
+| `0` | Plays the recorded notes |
+| `Spacebar` | Clears the recording |
 
 <!-- Anything else a player needs to know: how to get started, combinations of keys, a good thing to try first. -->
 
