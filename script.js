@@ -27,7 +27,6 @@
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
 
-const showRecording = document.getElementById("show-recording");
 
 const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // instrument 1
 const synthAM = new Tone.PolySynth(Tone.AMSynth).toDestination(); // instrument 2
@@ -71,7 +70,6 @@ function keyDown(event) {
       if (recordedNotes.length < 8) {
         recordedNotes.push(currentNote);
         console.log(recordedNotes);
-        showRecording.innerHTML = `Your song:<br>${recordedNotes.join(" - ")}`;
       }
     }
 
@@ -99,7 +97,6 @@ function keyDown(event) {
       recording = false;
       recordedNotes = [];
       console.log("Recording cleared:", recordedNotes);
-      showRecording.innerText = "";
     }
 
     //Checking for the mode buttons thus enabling an instrument
