@@ -60,36 +60,16 @@ const octaveUpdate = function (octaveEvent) {
   });
 };
 
-function keyDown(event) {
-  Tone.start(); // browsers only allow sound after the player has pressed something
-  //Checking for the octave buttons thus enabling an octave change
-
-  // Holding a key down sends keydown again and again. Only react to the first one.
-  if (event.repeat === false) {
-    let currentNote = keyboardToNotesSettings.get(event.key);
-    console.log("Key down:", event.key);
-    console.log("Current Note:", currentNote);
-    octaveUpdate(event.key);
-
-    if (event.key === "8") {
-      recording = true;
-      recordedNotes = [];
-    }
-
-    // save pressed note to array recordNotes
-    if (recording === true && currentNote) {
-      if (recordedNotes.length < 8) {
-        recordedNotes.push(currentNote);
-        console.log(recordedNotes);
-      }
-    }
-
-    // stop recordning
-    if (event.key === "9") {
-      recording = false;
-    }
-
-    if (event.key === "0" && isPlaying === false && recordedNotes.length > 0) {
+let recordFunctions = {
+  8: () => {
+    recording = true;
+    recordedNotes = [];
+  },
+  9: () => {
+    recording = false;
+  },
+  0: () => {
+    if (isPlaying === false) {
       isPlaying = true;
       for (let i = 0; i < recordedNotes.length; i++) {
         Instruments.at(index).triggerAttackRelease(
@@ -103,20 +83,42 @@ function keyDown(event) {
         isPlaying = false;
       }, recordedNotes.length * 250);
     }
+  },
+  " ": () => {
+    recording = false;
+    recordedNotes = [];
+    console.log("Recording cleared:", recordedNotes);
+  },
+};
 
-    // Clear recording
-    if (event.key === " ") {
-      recording = false;
-      recordedNotes = [];
-      console.log("Recording cleared:", recordedNotes);
-    }
+function keyDown(event) {
+  Tone.start(); // browsers only allow sound after the player has pressed something
+  //Checking for the octave buttons thus enabling an octave change
+
+  // Holding a key down sends keydown again and again. Only react to the first one.
+  if (event.repeat === false) {
+    //console.log("SHOULD RETURN TRUE: ", Object.hasOwn(objectIDK, event.key));
+    let currentNote = keyboardToNotesSettings.get(event.key);
+    console.log("Key down:", event.key);
+    console.log("Current Note:", currentNote);
+    octaveUpdate(event.key);
+
+    Object.hasOwn(recordFunctions, event.key) == true &&
+      recordFunctions[event.key]();
+
+    // save pressed note to array recordNotes
 
     index =
       parseInt(event.key) >= 1 && parseInt(event.key) <= 4
         ? parseInt(event.key) - 1
         : index;
 
-    if (currentNote) {
+    if (typeof currentNote !== "undefined") {
+      recordedNotes = [
+        ...recordedNotes,
+        ...(recording === true ? [currentNote] : []),
+      ].slice(0, 8);
+
       Instruments.at(index).triggerAttack(currentNote, Tone.now());
     }
   }
