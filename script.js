@@ -2,18 +2,19 @@
 // Settings variables should contain all of the "fixed" parts of your programs
 // For example: which key does what, which notes you can play, the tempo.
 let keyboardToNotesSettings = new Map([
-  ["a", "C4"],
-  ["s", "D4"],
-  ["d", "E4"],
-  ["f", "F4"],
-  ["g", "G4"],
-  ["h", "A4"],
-  ["j", "B4"],
+  ["a", "C"],
+  ["s", "D"],
+  ["d", "E"],
+  ["f", "F"],
+  ["g", "G"],
+  ["h", "A"],
+  ["j", "B"],
 ]);
 // ---------- State ----------
 // State variables are the parts of your program that change over time.
 // For example: which octave you're playing in, or whether a drone is on.
 let instrumentsIndex = 0;
+let octaveState = 4;
 
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
@@ -46,15 +47,12 @@ const octaveUpdate = function (octaveEvent) {
   };
 
   // % by 5 because we allow 4 octaves only (1..4)
-  let octaveState =
-    (octaveAddSub(octaveEvent) +
-      Number(keyboardToNotesSettings.get("a").slice(1, 2))) %
-    5;
+  octaveState = (octaveState + octaveAddSub(octaveEvent)) % 5;
 
   keyboardToNotesSettings.forEach((note, kKey) => {
     keyboardToNotesSettings.set(
       kKey,
-      note.slice(0, -1) + (octaveState + !octaveState),
+      Array.from(note)[0] + (octaveState + !octaveState),
     );
   });
 };
