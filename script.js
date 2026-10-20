@@ -2,13 +2,13 @@
 // Settings variables should contain all of the "fixed" parts of your programs
 // For example: which key does what, which notes you can play, the tempo.
 let keyboardToNotesSettings = new Map([
-  ["a", "C"],
-  ["s", "D"],
-  ["d", "E"],
-  ["f", "F"],
-  ["g", "G"],
-  ["h", "A"],
-  ["j", "B"],
+  ["a", "C4"],
+  ["s", "D4"],
+  ["d", "E4"],
+  ["f", "F4"],
+  ["g", "G4"],
+  ["h", "A4"],
+  ["j", "B4"],
 ]);
 const showRecording = document.getElementById("show-recording");
 let recording = false;
